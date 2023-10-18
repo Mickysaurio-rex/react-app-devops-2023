@@ -72,27 +72,12 @@ jobs:
     - name: Login Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.CESAR_DOCKERHUB_USERNAME }}
-        password: ${{ secrets.CESAR_DOCKERHUB_PASSWORD }}
+        username: ${{ secrets.DOCKER_NAME }}
+        password: ${{ secrets.DOCKER_PWD }}
 
     - name: Generar imagen docker y push
       uses: docker/build-push-action@v5
       with:
         push: true
-        tags: cesarill/react-app:latest
+        tags: mickysaurio-rex/react-app-devops-2023:latest
 
-
-  deploy_into_dev_server:
-    runs-on: ubuntu-latest
-    needs: [build_docker_image_and_push_to_docker_hub]
-    steps:
-      - name: Commands
-        uses: appleboy/ssh-action@master
-        with:
-          host: 34.228.78.13
-          username: ec2-user
-          key: ${{ secrets.REACT_SERVER_PRIVATE_KEY }}
-          script: |
-            sudo docker stop REACT_SERVICE
-            sudo docker run -d -p 8080:80 --name REACT_SERVICE cesarill/react-app:latest
-            
